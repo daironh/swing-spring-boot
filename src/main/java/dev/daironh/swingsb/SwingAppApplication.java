@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -196,13 +197,13 @@ public class SwingAppApplication extends JFrame {
 
 
     private void openNewWindow() {
-        // Create a new JFrame for the dropdown window
-        JFrame dropdownWindow = new JFrame("Dropdown Selection");
-        dropdownWindow.setSize(300, 150);
-        dropdownWindow.setLocationRelativeTo(this);
-        dropdownWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+       // Create a JDialog for the dropdown window
+        JDialog dropdownDialog = new JDialog(this, "Dropdown Selection", true); // Modal dialog
+        dropdownDialog.setSize(300, 150);
+        dropdownDialog.setLocationRelativeTo(this);
+        dropdownDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        // Create components for the dropdown window
+        // Create components for the dropdown dialog
         String[] choices = {"Choice 1", "Choice 2", "Choice 3"};
         JComboBox<String> dropdown = new JComboBox<>(choices);
         JButton acceptButton = new JButton("Accept");
@@ -212,18 +213,34 @@ public class SwingAppApplication extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedValue = (String) dropdown.getSelectedItem(); // Store the selected value
-                JOptionPane.showMessageDialog(dropdownWindow, "Selected: " + selectedValue, "Selection", JOptionPane.INFORMATION_MESSAGE);
-                dropdownWindow.dispose(); // Close the window
+
+                // If Choice 3 is selected, show a confirmation dialog
+                if (selectedValue.equals("Choice 3")) {
+                    int confirm = JOptionPane.showConfirmDialog(
+                            dropdownDialog,
+                            "Are you sure you want to select Choice 3?",
+                            "Confirm Choice 3",
+                            JOptionPane.YES_NO_OPTION
+                    );
+
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(dropdownDialog, "Selected: " + selectedValue, "Selection", JOptionPane.INFORMATION_MESSAGE);
+                        dropdownDialog.dispose(); // Close the dialog
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(dropdownDialog, "Selected: " + selectedValue, "Selection", JOptionPane.INFORMATION_MESSAGE);
+                    dropdownDialog.dispose(); // Close the dialog
+                }
             }
         });
 
-        // Add components to the dropdown window
+        // Add components to the dropdown dialog
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(dropdown, BorderLayout.CENTER);
         panel.add(acceptButton, BorderLayout.SOUTH);
 
-        dropdownWindow.add(panel);
-        dropdownWindow.setVisible(true);
+        dropdownDialog.add(panel);
+        dropdownDialog.setVisible(true);
     }
 
 
